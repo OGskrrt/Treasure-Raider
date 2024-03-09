@@ -19,29 +19,24 @@ public class MotionlessObject extends JLabel {
     private BufferedImage RockIcon;
     private int rows;
     private int columns;
-    private List<Location> locations;
-    private Container container;
-    private List<Location> iconLocations;
 
+
+    // Where begins in GRID section
     public MotionlessObject(Container container, int rows, int columns, List<Location> occupiedLocations) {
         super();
-        this.container = container;
         this.rows = rows;
         this.columns = columns;
-        this.locations = occupiedLocations;
-        this.iconLocations = new ArrayList<>();
 
-        // İkonları yükle ve şeffaflığı ayarla
+        // Load icons
         MountainIcon = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\mountain.png");
         TreeIcon = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\tree.png");
         WallIcon = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\wall.jpg");
         RockIcon = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\rock.png");
     }
+    // This and Transparent section created in Grid.
 
-    public Location gettLocation() {
-        return new Location(rows, columns, 1, 1);
-    }
 
+    // Make png icon transparent, complete. Please don't touch.
     private BufferedImage loadAndMakeTransparent(String path) {
         try {
             BufferedImage image = ImageIO.read(new File(path));
@@ -80,8 +75,11 @@ public class MotionlessObject extends JLabel {
         bGr.dispose();
         return bimage;
     }
+    // Transparent OK
 
-    // Getter metodları
+
+
+    // GET methods for icons, required for placeRandomIcon
     public BufferedImage getMountainIcon() {
         return MountainIcon;
     }
