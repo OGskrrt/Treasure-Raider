@@ -49,13 +49,13 @@ public class MovingObject extends JLabel {
         });
         this.timer.setRepeats(true);
         this.timer.start();
-        this.BeeIcon = this.loadAndMakeTransparent("bee.png");
-        this.BirdIcon = this.loadAndMakeTransparent("bird.png");
-        this.CatIcon = this.loadAndMakeTransparent("cat.jpg");
+        this.BeeIcon = this.loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\rock.png");
+        this.BirdIcon = this.loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\rock.png");
+        this.CatIcon = this.loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\rock.png");
     }
 
     public Location gettLocation() {
-        List<Location> iconLocations = this.grid.getIconLocations();
+        //List<Location> iconLocations = this.grid.getIconLocations();
         return !iconLocations.isEmpty() ? (Location)iconLocations.get(iconLocations.size() - 1) : new Location(0, 0, 1, 1);
     }
 
