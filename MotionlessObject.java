@@ -1,10 +1,16 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageFilter;
+import java.awt.image.RGBImageFilter;
+import java.awt.image.ImageProducer;
+import java.awt.image.FilteredImageSource;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MotionlessObject extends JLabel {
     private BufferedImage MountainSummer;
@@ -31,7 +37,7 @@ public class MotionlessObject extends JLabel {
         TreeWinter = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\treewinter.png");
         WallIcon = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\wall.jpg");
         RockIcon = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\rock.png");
-        
+
     }
     // This and Transparent section created in Grid.
 

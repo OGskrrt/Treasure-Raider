@@ -12,8 +12,8 @@ public class MotionObject {
     private static BufferedImage birdareaicon;
     private List<Location> MotionLocations;
     public MotionObject() {
-        bee = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\bee.jpg");
-        bird = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\bird.jpg");
+        bee = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\bee.png");
+        bird = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\bird.png");
         beeareaicon = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\beearea.png");
         birdareaicon = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\birdarea.png");
     }

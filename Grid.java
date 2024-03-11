@@ -59,10 +59,8 @@ public class Grid extends JPanel {
         int col = 0, row=0;
         BufferedImage newimage = null;
         for (int i = 0; i < numberOfIcons; i++) {
-            System.out.println("ilk for içi\n" +i);
             boolean isOverlapping = true;
             while(isOverlapping){
-                System.out.println("while giriş\n");
                 isOverlapping = false;
                 // Get random row and column
                 col = random.nextInt(columns);
@@ -72,17 +70,14 @@ public class Grid extends JPanel {
                 // Save it to location object
                 Location cmonman = new Location(col, row, 1, 1, newimage);
                 for (Location existingLocation : AllIconLocations) {
-                    System.out.println("ikinci for içi\n");
                     //Look all locations if random row and col conflict with any other icons
                     if(areAreasOverlapping(existingLocation, cmonman)){
-                        System.out.println("overlap varrr\n");
                         isOverlapping = true;
                         break;
                     }
                 }
                 //If there is no overlap, add it to icon locations list
             }
-            System.out.println("overlap giderildi, eklenme yapıldı \n");
             AllIconLocations.add(new Location(col, row, 1, 1, newimage));
             iconLocationsTreasure.add(new Location(col, row, 1, 1, newimage));
 
@@ -96,10 +91,8 @@ public class Grid extends JPanel {
         int row=0;
         BufferedImage newimagedyn = null;
         for (int i = 0; i < numberofdynamic; i++) {
-            System.out.println("ilk for içi\n" +i);
             boolean isOverlapping = true;
             while(isOverlapping){
-                System.out.println("while giriş\n");
                 isOverlapping = false;
                 // Get random row and column
                 col = random.nextInt(columns-20)+10;
@@ -111,18 +104,14 @@ public class Grid extends JPanel {
                 cmonman = new Location(col, row, pickedDYNWidth, pickedDYNHeight, newimagedyn);
                 cmonman.setDynamicicon(picdynamicicon, i);
                 for (Location existingLocation : AllIconLocations) {
-                    System.out.println("ikinci for içi\n");
                     //Look all locations if random row and col conflict with any other icons
                     if(areAreasOverlapping(existingLocation, cmonman)){
-                        System.out.println("overlap varrr\n");
                         isOverlapping = true;
                         break;
                     }
                 }
-
                 //If there is no overlap, add it to icon locations list
             }
-            System.out.println("overlap giderildi, eklenme yapıldı \n");
             AllIconLocations.add(cmonman);
             iconLocationsObstacle.add(cmonman);
             iconLocationsdynamic.add(cmonman);
@@ -134,10 +123,8 @@ public class Grid extends JPanel {
         int col = 0, row=0;
         BufferedImage newimage = null;
         for (int i = 0; i < numberOfIcons; i++) {
-            System.out.println("ilk for içi\n" +i);
             boolean isOverlapping = true;
             while(isOverlapping){
-                System.out.println("while giriş\n");
                 isOverlapping = false;
                 // Get random row and column
                 col = random.nextInt(columns);
@@ -151,17 +138,14 @@ public class Grid extends JPanel {
                 // Save it to location object
                 Location cmonman = new Location(col, row, pickedIconWidth, pickedIconHeight, newimage);
                 for (Location existingLocation : AllIconLocations) {
-                    System.out.println("ikinci for içi\n");
                     //Look all locations if random row and col conflict with any other icons
                     if(areAreasOverlapping(existingLocation, cmonman)){
-                        System.out.println("overlap varrr\n");
                         isOverlapping = true;
                         break;
                     }
                 }
                 //If there is no overlap, add it to icon locations list
             }
-            System.out.println("overlap giderildi, eklenme yapıldı \n");
             AllIconLocations.add(new Location(col, row, pickedIconWidth, pickedIconHeight, newimage));
             iconLocationsObstacle.add(new Location(col, row, pickedIconWidth, pickedIconHeight, newimage));
             iconLocationsstatic.add(new Location(col, row, pickedIconWidth, pickedIconHeight, newimage));
@@ -218,6 +202,28 @@ public class Grid extends JPanel {
         // If there is no intersection, return false
         return false;
     }
+    public void Animation(){
+        this.moveTimer = new Timer(10, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                for (Location location : iconLocationsdynamic) {
+                    double x =location.dynamicX;
+                    double y =location.dynamicY;
+                    if(location.DYNiconID.equals("bee")){
+                        location.setDynamicX(x + 0.01);
+                    }
+                    if(location.DYNiconID.equals("bird")){
+                        location.setDynamicY(y + 0.01);
+                    }
+
+
+                }
+                repaint();
+            }
+        });
+        moveTimer.start();
+    }
 
     @Override
     //Start with Grid Constructor same time
@@ -253,42 +259,27 @@ public class Grid extends JPanel {
             int a = (int) (location.x*blockWidth);
             int b = (int) (location.y*blockHeight);
 
-            Graphics2D g2d = (Graphics2D) g.create();
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            //Graphics2D g2d = (Graphics2D) g.create();
+            //g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g.drawImage(location.pickedIcon, a, b, (int) (location.getWidth()*blockWidth), (int) (location.getHeight()*blockHeight), null);
             // And draw...
-            g2d.dispose();
-
-
-        }
-        moveTimer = new Timer(1000, new ActionListener() {
-            int a, b;
-            int x=0, y=0;
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                for (Location location : iconLocationsdynamic){
-                    x++;
-                    y++;
-                    a = (int) (location.x*blockWidth);
-                    b = (int) (location.y*blockHeight);
-
-                    g.drawImage(location.pickedIcon, a+x, b+y, (int) (location.getWidth()*blockWidth), (int) (location.getHeight()*blockHeight), null);
-                }
-
+            //g2d.dispose();
+            if(location.dynamicicon!=null){
+                g.drawImage(location.dynamicicon, (int) (location.dynamicX*blockWidth), (int) (location.dynamicY*blockHeight), (int) (2*blockWidth), (int) (2*blockHeight), null);
             }
-        });
-        moveTimer.start();
+        }
+
         //Grid and motionless icons drawn.
     }
     private BufferedImage getRandomIconDynamic2(int i){
         if(i==0){
-            return resizeIcon(MotionObject.getBee(),2,2);
+            return resizeIcon(MotionObject.getBee(), (int) (2*blockWidth), (int)(2*blockHeight));
         }
         if(i==1){
-            return resizeIcon(MotionObject.getBird(),2,2);
+            return resizeIcon(MotionObject.getBird(), (int) (2*blockWidth), (int)(2*blockHeight));
         }
         if(i==2){
-            return resizeIcon(MotionObject.getBee(),2, 2);
+            return resizeIcon(MotionObject.getBee(), (int) (2*blockWidth), (int)(2*blockHeight));
         }
         else{
             return null;
