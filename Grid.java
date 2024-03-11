@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,53 +10,166 @@ import java.util.Random;
 public class Grid extends JPanel {
     private int rows;
     private int columns;
-    private List<Location> iconLocations;
+    private List<Location> AllIconLocations;
+    private List<Location> iconLocationsObstacle;
+    private List<Location> iconLocationsstatic;
+    private List<Location> iconLocationsdynamic;
+    private List<Location> iconLocationsTreasure;
     private MotionlessObject motionlessObject;
-    int blockWidth;
-    int blockHeight;
-    public int pickedIconWidth;
-    public int pickedIconHeight;
+    private MotionObject motionObject;
+    private Treasures treasures;
+    double blockWidth;
+    double blockHeight;
+    public int pickedIconWidth = 15;
+    public int pickedIconHeight = 15;
+
+    public int pickedDYNWidth = 2;
+    public int pickedDYNHeight = 2;
     private int[] iconCount = new int[5];
+    private int mountainIconCount = 0;
+    private int treeIconCount = 0;
+    private int wallIconCount = 0;
+    private int rockIconCount = 0;
+    private Timer moveTimer;
+    private Location cmonman;
 
     public Grid(int rows, int columns) {
         this.rows = rows;
         this.columns = columns;
-        this.iconLocations = new ArrayList<>();
-        System.out.println("Grid Constructor\n");
-        List<Location> occupiedLocations = new ArrayList<>();
-        this.motionlessObject = new MotionlessObject(this, rows, columns, occupiedLocations);
-
+        this.AllIconLocations = new ArrayList<>();
+        this.iconLocationsstatic = new ArrayList<>();
+        this.iconLocationsdynamic = new ArrayList<>();
+        this.iconLocationsObstacle = new ArrayList<>();
+        this.iconLocationsTreasure = new ArrayList<>();
+        this.motionlessObject = new MotionlessObject(this, rows, columns);
+        this.motionObject = new MotionObject();
+        this.treasures = new Treasures(this, rows, columns);
     }
 
-    public void RandomLocationsForIcons(int numberOfIcons) {
+    public void RandomLocationsForIcons(int numberOfIcons, int numberofdynamic) {
+        randomstatic(numberOfIcons);
+        randomdynamic(numberofdynamic);
+        randomTreasure(numberOfIcons);
+        // IDK what is this but its necessary, I think...
+        repaint();
+        // After that, PaintComponent section will start.
+    }
+    private void randomTreasure(int numberOfIcons){
         Random random = new Random();
+        int col = 0, row=0;
+        BufferedImage newimage = null;
         for (int i = 0; i < numberOfIcons; i++) {
-            boolean isOverlapping = false;
-            while(!isOverlapping){
+            System.out.println("ilk for içi\n" +i);
+            boolean isOverlapping = true;
+            while(isOverlapping){
+                System.out.println("while giriş\n");
+                isOverlapping = false;
                 // Get random row and column
-                int row = random.nextInt(rows-11)+5;
-                int col = random.nextInt(columns-11)+5;
+                col = random.nextInt(columns);
                 // Get random icon;
-                BufferedImage newimage = getRandomIcon();
-                Location cmonman = new Location(col, row, pickedIconWidth, pickedIconHeight, newimage);
-                for (Location existingLocation : iconLocations) {
+                newimage = getRandomTreasure(i);
+                row = random.nextInt(rows);
+                // Save it to location object
+                Location cmonman = new Location(col, row, 1, 1, newimage);
+                for (Location existingLocation : AllIconLocations) {
+                    System.out.println("ikinci for içi\n");
                     //Look all locations if random row and col conflict with any other icons
                     if(areAreasOverlapping(existingLocation, cmonman)){
+                        System.out.println("overlap varrr\n");
                         isOverlapping = true;
                         break;
                     }
                 }
                 //If there is no overlap, add it to icon locations list
-                if (!isOverlapping) {
-                    isOverlapping = true;
-                    iconLocations.add(new Location(col, row, pickedIconWidth, pickedIconHeight, newimage));
-                }
             }
+            System.out.println("overlap giderildi, eklenme yapıldı \n");
+            AllIconLocations.add(new Location(col, row, 1, 1, newimage));
+            iconLocationsTreasure.add(new Location(col, row, 1, 1, newimage));
 
         }
-        // IDK what is this but its necessary, I think...
-        repaint();
+        treasures.setTreasureLocations(iconLocationsTreasure);
     }
+    private void randomdynamic(int numberofdynamic){
+        BufferedImage picdynamicicon;
+        Random random = new Random();
+        int col = 0;
+        int row=0;
+        BufferedImage newimagedyn = null;
+        for (int i = 0; i < numberofdynamic; i++) {
+            System.out.println("ilk for içi\n" +i);
+            boolean isOverlapping = true;
+            while(isOverlapping){
+                System.out.println("while giriş\n");
+                isOverlapping = false;
+                // Get random row and column
+                col = random.nextInt(columns-20)+10;
+                // Get random icon;
+                newimagedyn = getRandomIconDynamic(i);
+                row = random.nextInt(rows-20)+10;
+                picdynamicicon = getRandomIconDynamic2(i);
+                // Save it to location object
+                cmonman = new Location(col, row, pickedDYNWidth, pickedDYNHeight, newimagedyn);
+                cmonman.setDynamicicon(picdynamicicon, i);
+                for (Location existingLocation : AllIconLocations) {
+                    System.out.println("ikinci for içi\n");
+                    //Look all locations if random row and col conflict with any other icons
+                    if(areAreasOverlapping(existingLocation, cmonman)){
+                        System.out.println("overlap varrr\n");
+                        isOverlapping = true;
+                        break;
+                    }
+                }
+
+                //If there is no overlap, add it to icon locations list
+            }
+            System.out.println("overlap giderildi, eklenme yapıldı \n");
+            AllIconLocations.add(cmonman);
+            iconLocationsObstacle.add(cmonman);
+            iconLocationsdynamic.add(cmonman);
+        }
+        motionObject.setMotionLocations(iconLocationsdynamic);
+    }
+    private void randomstatic(int numberOfIcons){
+        Random random = new Random();
+        int col = 0, row=0;
+        BufferedImage newimage = null;
+        for (int i = 0; i < numberOfIcons; i++) {
+            System.out.println("ilk for içi\n" +i);
+            boolean isOverlapping = true;
+            while(isOverlapping){
+                System.out.println("while giriş\n");
+                isOverlapping = false;
+                // Get random row and column
+                col = random.nextInt(columns);
+                // Get random icon;
+                newimage = getRandomIcon(col, i);
+                row = random.nextInt(rows);
+                if(col+pickedIconWidth > columns || row + pickedIconHeight >rows || col-pickedIconWidth < 0 || row - pickedIconHeight <0){
+                    isOverlapping = true;
+                    continue;
+                }
+                // Save it to location object
+                Location cmonman = new Location(col, row, pickedIconWidth, pickedIconHeight, newimage);
+                for (Location existingLocation : AllIconLocations) {
+                    System.out.println("ikinci for içi\n");
+                    //Look all locations if random row and col conflict with any other icons
+                    if(areAreasOverlapping(existingLocation, cmonman)){
+                        System.out.println("overlap varrr\n");
+                        isOverlapping = true;
+                        break;
+                    }
+                }
+                //If there is no overlap, add it to icon locations list
+            }
+            System.out.println("overlap giderildi, eklenme yapıldı \n");
+            AllIconLocations.add(new Location(col, row, pickedIconWidth, pickedIconHeight, newimage));
+            iconLocationsObstacle.add(new Location(col, row, pickedIconWidth, pickedIconHeight, newimage));
+            iconLocationsstatic.add(new Location(col, row, pickedIconWidth, pickedIconHeight, newimage));
+
+        }
+        motionlessObject.setMotionlessLocations(iconLocationsstatic);
+    }
+
     private boolean areAreasOverlapping(Location location1, Location location2) {
 
         // Get the corner points of Location 1
@@ -104,103 +219,163 @@ public class Grid extends JPanel {
         return false;
     }
 
-
-
-
     @Override
+    //Start with Grid Constructor same time
     protected void paintComponent(Graphics g) {
-        System.out.println("Paint Component giriş \n");
-        //Start with Grid same time
         super.paintComponent(g);
-
-        // Draw Grid
         int width = getWidth();
         int height = getHeight();
-        blockWidth = width / columns;
-        blockHeight = height / rows;
+        blockWidth = (double) width / columns;
+        blockHeight = (double) height / rows;
         // Start to drawing grid
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
-                int x = column * blockWidth;
-                int y = row * blockHeight;
+                int x = (int) (column * blockWidth);
+                int y = (int) (row * blockHeight);
 
                 if (column < (columns / 2)) {
                     g.setColor(new Color(185, 232, 234));
                 } else {
                     g.setColor(new Color(255, 223, 34));
                 }
-                g.fillRect(x, y, blockWidth, blockHeight);
+                g.fillRect(x, y, (int)blockWidth, (int)blockHeight);
                 g.setColor(Color.BLACK);
-                g.drawRect(x, y, blockWidth, blockHeight);
-
-
-
+                g.drawRect(x, y, (int)blockWidth, (int)blockHeight);
             }
         }
         // Grid Completed
 
         //This section for draw icons
-        for (Location location : iconLocations){
+        for (Location location : AllIconLocations){
             if(location.pickedIcon==null){
                 System.out.println("OMG there is no icon! DAD, HELP! \n");
             }
-            int a = location.x*blockWidth;
-            int b = location.y*blockHeight;
+            int a = (int) (location.x*blockWidth);
+            int b = (int) (location.y*blockHeight);
 
             Graphics2D g2d = (Graphics2D) g.create();
             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g.drawImage(location.pickedIcon, a, b, location.getWidth()*blockWidth, location.getHeight()*blockHeight, null);
+            g.drawImage(location.pickedIcon, a, b, (int) (location.getWidth()*blockWidth), (int) (location.getHeight()*blockHeight), null);
             // And draw...
             g2d.dispose();
 
 
         }
+        moveTimer = new Timer(1000, new ActionListener() {
+            int a, b;
+            int x=0, y=0;
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (Location location : iconLocationsdynamic){
+                    x++;
+                    y++;
+                    a = (int) (location.x*blockWidth);
+                    b = (int) (location.y*blockHeight);
+
+                    g.drawImage(location.pickedIcon, a+x, b+y, (int) (location.getWidth()*blockWidth), (int) (location.getHeight()*blockHeight), null);
+                }
+
+            }
+        });
+        moveTimer.start();
         //Grid and motionless icons drawn.
     }
-
-
-    private BufferedImage getRandomIcon() {
-        System.out.println("random içi");
-        // It's To get random icon, no icon should be taken more than 5.
-        Random random = new Random();
-        boolean ops = false;
-        int what = 0;
-        while (!ops) {
-            what = random.nextInt(4) + 1;
-            if (iconCount[what - 1] < 5) {
-                ops = true;
-            }
+    private BufferedImage getRandomIconDynamic2(int i){
+        if(i==0){
+            return resizeIcon(MotionObject.getBee(),2,2);
         }
-        //increase counter
-        iconCount[what - 1]++;
-
-        switch (what) {
-            case 1:
-                pickedIconWidth = 15;
-                pickedIconHeight = 15;
-                return resizeIcon(motionlessObject.getMountainIcon(), 150, 150);
-            case 2:
-                int size = random.nextInt(4) + 2;
-                pickedIconWidth = size;
-                pickedIconHeight = size;
-                return resizeIcon(motionlessObject.getTreeIcon(), size * blockWidth, size * blockHeight);
-            case 3:
-                pickedIconWidth = 10;
-                pickedIconHeight = 1;
-                return resizeIcon(motionlessObject.getWallIcon(), 10 * blockWidth, blockHeight);
-            case 4:
-                size = random.nextInt(2) + 2;
-                pickedIconWidth = size;
-                pickedIconHeight = size;
-                return resizeIcon(motionlessObject.getRockIcon(), size * blockWidth, size * blockHeight);
-            default:
-                return null;
+        if(i==1){
+            return resizeIcon(MotionObject.getBird(),2,2);
+        }
+        if(i==2){
+            return resizeIcon(MotionObject.getBee(),2, 2);
+        }
+        else{
+            return null;
         }
     }
 
+    private BufferedImage getRandomIconDynamic(int i){
+        if(i==0){
+            pickedDYNWidth = 6;
+            pickedDYNHeight = 2;
+
+            return MotionObject.getBeeareaicon();
+        }
+        if(i==1){
+            pickedDYNWidth = 2;
+            pickedDYNHeight = 10;
+            return MotionObject.getBirdareaicon();
+        }
+        if(i==2){
+            pickedDYNWidth = 6;
+            pickedDYNHeight = 2;
+            return MotionObject.getBeeareaicon();
+        }
+        else{
+            return null;
+        }
+    }
+
+    private BufferedImage getRandomIcon(int col, int i) {
+        Random random = new Random();
+
+        if(0 <= i && i<5){
+            pickedIconWidth = 15;
+            pickedIconHeight = 15;
+            if (col > columns / 2.2) {
+                return resizeIcon(motionlessObject.getMountainSummer(), 150, 150);
+            } else {
+                return resizeIcon(motionlessObject.getMountainWinter(), 150, 150);
+            }
+        }
+        if(5<=i && i<10){
+            int size = random.nextInt(4) + 2;
+            pickedIconWidth = size;
+            pickedIconHeight = size;
+            if (col > columns / 2.2) {
+                return resizeIcon(motionlessObject.getTreeSummer(), (int) (size * blockWidth), (int) (size * blockHeight));
+            } else {
+                return resizeIcon(motionlessObject.getTreeWinter(), (int) (size * blockWidth), (int) (size * blockHeight));
+            }
+        }
+        if(10<=i && i<15){
+            pickedIconWidth = 10;
+            pickedIconHeight = 1;
+            return resizeIcon(motionlessObject.getWallIcon(), (int) (10 * blockWidth), (int) (blockHeight));
+        }
+        if(15<=i && i<20){
+            int size = random.nextInt(2) + 2;
+            pickedIconWidth = size;
+            pickedIconHeight = size;
+            return resizeIcon(motionlessObject.getRockIcon(), (int) (size * blockWidth), (int) (size * blockHeight));
+        }
+        else{
+            return null;
+        }
+
+    }
+    private BufferedImage getRandomTreasure(int i) {
+        if(0 <= i && i<5){
+            return resizeIcon(treasures.getGold(), 1, 1);
+        }
+        if(5<=i && i<10){
+            return resizeIcon(treasures.getSilver(), 1, 1);
+        }
+        if(10<=i && i<15){
+            return resizeIcon(treasures.getCopper(), 1, 1);
+        }
+        if(15<=i && i<20){
+            return resizeIcon(treasures.getEmerald(), 1, 1);
+        }
+        else{
+            return null;
+        }
+
+    }
 
     private BufferedImage resizeIcon(BufferedImage icon, int width, int height) {
-        // To resize as wished, don't touch here pls.
+        // To resize images as wished, don't touch here pls.
         if (width > 0 && height > 0) {
             Image newImage = icon.getScaledInstance(width, height, Image.SCALE_SMOOTH);
             BufferedImage buffered = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);

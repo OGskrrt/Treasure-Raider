@@ -8,11 +8,19 @@ public class Location {
     public int[][] areaX;
     public int[][] areaY;
     public BufferedImage pickedIcon;
+    public BufferedImage dynamicicon;
+    public int dynamicX;
+    public int dynamicY;
+    public int dynamicXWidth = 2;
+    public int dynamicYHeigh =2;
+    public char[] DYNiconID;
 
 
     public Location(int x, int y, int width, int height, BufferedImage pickedIcon) {
         this.x = x;
         this.y = y;
+        this.dynamicX = x;
+        this.dynamicY = y;
         this.pickedIcon = pickedIcon;
         this.width = width;
         this.height = height;
@@ -30,7 +38,15 @@ public class Location {
         }
     }
 
-
+    public void setDynamicicon(BufferedImage dynamicicon, int id) {
+        this.dynamicicon = dynamicicon;
+        if(id%2==0){
+            DYNiconID = "bee".toCharArray();
+        }
+        else{
+            DYNiconID = "bird".toCharArray();
+        }
+    }
 
     public int getX() {
         return x;

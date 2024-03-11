@@ -1,43 +1,43 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageFilter;
-import java.awt.image.RGBImageFilter;
-import java.awt.image.ImageProducer;
-import java.awt.image.FilteredImageSource;
+import java.awt.image.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class MotionlessObject extends JLabel {
-    private BufferedImage MountainIcon;
-    private BufferedImage TreeIcon;
+    private BufferedImage MountainSummer;
+    private BufferedImage MountainWinter;
+    private BufferedImage TreeSummer;
+    private BufferedImage TreeWinter;
     private BufferedImage WallIcon;
     private BufferedImage RockIcon;
+    private List<Location> MotionlessLocations;
     private int rows;
     private int columns;
 
 
     // Where begins in GRID section
-    public MotionlessObject(Container container, int rows, int columns, List<Location> occupiedLocations) {
+    public MotionlessObject(Container container, int rows, int columns) {
         super();
         this.rows = rows;
         this.columns = columns;
 
         // Load icons
-        MountainIcon = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\mountain.png");
-        TreeIcon = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\tree.png");
+        MountainSummer = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\mountainsummer.jpg");
+        MountainWinter = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\mountain.jpg");
+        TreeSummer = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\tree.png");
+        TreeWinter = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\treewinter.png");
         WallIcon = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\wall.jpg");
         RockIcon = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\rock.png");
+        
     }
     // This and Transparent section created in Grid.
 
 
     // Make png icon transparent, complete. Please don't touch.
-    private BufferedImage loadAndMakeTransparent(String path) {
+    public BufferedImage loadAndMakeTransparent(String path) {
         try {
             BufferedImage image = ImageIO.read(new File(path));
             return makeColorTransparent(image, new Color(255, 255, 255, 0)); // Beyaz rengi şeffaf yap
@@ -80,12 +80,18 @@ public class MotionlessObject extends JLabel {
 
 
     // GET methods for icons, required for placeRandomIcon
-    public BufferedImage getMountainIcon() {
-        return MountainIcon;
+    public BufferedImage getMountainSummer() {
+        return MountainSummer;
+    }
+    public BufferedImage getMountainWinter() {
+        return MountainWinter;
     }
 
-    public BufferedImage getTreeIcon() {
-        return TreeIcon;
+    public BufferedImage getTreeSummer() {
+        return TreeSummer;
+    }
+    public BufferedImage getTreeWinter() {
+        return TreeWinter;
     }
 
     public BufferedImage getWallIcon() {
@@ -96,4 +102,7 @@ public class MotionlessObject extends JLabel {
         return RockIcon;
     }
 
+    public void setMotionlessLocations(List<Location> motionlessLocations) {
+        MotionlessLocations = motionlessLocations;
+    }
 }
