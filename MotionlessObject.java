@@ -31,6 +31,14 @@ public class MotionlessObject extends JLabel {
         this.columns = columns;
 
         // Load icons
+        /*
+        MountainSummer = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\mountainsummer.jpg");
+        MountainWinter = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\mountain.jpg");
+        TreeSummer = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\tree.png");
+        TreeWinter = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\treewinter.png");
+        WallIcon = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\wall.jpg");
+        RockIcon = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\rock.png");
+         */
         MountainSummer = loadAndMakeTransparent("C:\\Users\\merve\\OneDrive\\Masaüstü\\picture\\mountainsummer.jpg");
         MountainWinter = loadAndMakeTransparent("C:\\Users\\merve\\OneDrive\\Masaüstü\\picture\\mountain.jpg");
         TreeSummer = loadAndMakeTransparent("C:\\Users\\merve\\OneDrive\\Masaüstü\\picture\\tree.png");
