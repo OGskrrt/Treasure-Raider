@@ -16,6 +16,7 @@ public class Grid extends JPanel {
     private List<Location> iconLocationsdynamic;
     private List<Location> iconLocationsTreasure;
     private MotionlessObject motionlessObject;
+    private Character character;
     private MotionObject motionObject;
     private Treasures treasures;
     double blockWidth;
@@ -83,6 +84,10 @@ public class Grid extends JPanel {
 
         }
         treasures.setTreasureLocations(iconLocationsTreasure);
+    }
+
+    public Character getCharacter() {
+        return this.character;
     }
     private void randomdynamic(int numberofdynamic){
         BufferedImage picdynamicicon;
@@ -268,8 +273,55 @@ public class Grid extends JPanel {
                 g.drawImage(location.dynamicicon, (int) (location.dynamicX*blockWidth), (int) (location.dynamicY*blockHeight), (int) (2*blockWidth), (int) (2*blockHeight), null);
             }
         }
+        Character character = getCharacter();
+        if (character != null) {
+            BufferedImage characterIcon = character.getCharacterIcon();
+            Location currentPosition = character.getCurrentPosition();
+            if (characterIcon != null && currentPosition != null) {
+                int x = (int) (currentPosition.getX() * blockWidth);
+                int y = (int) (currentPosition.getY() * blockHeight);
+                int characterWidth = (int) (2 * blockWidth);
+                int characterHeight = (int) (3 * blockHeight);
+                g.drawImage(characterIcon, x, y, characterWidth, characterHeight, this);
+            }
+        }
+        moveTimer = new Timer(1000, new ActionListener() {
+            int a, b;
+            int x=0, y=0;
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                for (Location location : iconLocationsdynamic){
+                    x++;
+                    y++;
+                    a = (int) (location.x*blockWidth);
+                    b = (int) (location.y*blockHeight);
+
+                    g.drawImage(location.pickedIcon, a+x, b+y, (int) (location.getWidth()*blockWidth), (int) (location.getHeight()*blockHeight), null);
+                }
+
+            }
+        });
+        moveTimer.start();
 
         //Grid and motionless icons drawn.
+    }
+
+    public void setCharacter(Character character) {
+        this.character = character;
+    }
+
+    public Location getInitialCharacterLocation() {
+        return new Location(0, 0, 2, 2, character.getCharacterIcon()); // Adjust dimensions as needed
+    }
+
+
+    public List<Location> getIconLocations() {
+        List<Location> allLocations = new ArrayList<>();
+        allLocations.addAll(iconLocationsObstacle);
+        allLocations.addAll(iconLocationsstatic);
+        allLocations.addAll(iconLocationsdynamic);
+        allLocations.addAll(iconLocationsTreasure);
+        return allLocations;
     }
     private BufferedImage getRandomIconDynamic2(int i){
         if(i==0){

@@ -2,18 +2,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 
 public class Main {
     private int rows, columns;
     private JFrame frame;
     private Grid grid;
+    private Character character;
 
 
-    public Main(String[] args) {
+    private void createAndShowGUI() {
         frame = new JFrame("Treasure Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -21,17 +22,12 @@ public class Main {
         panel.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        JButton createMapButton = new JButton("YENİ HARİTA OLUŞTUR");
-        createMapButton.setForeground(Color.BLACK);
-        createMapButton.setBackground(Color.WHITE);
-        createMapButton.setOpaque(true);
-        createMapButton.setBorderPainted(false);
+        JButton createMapButton = new JButton("CREATE A NEW MAP");
+        styleButton(createMapButton);
 
-        JButton startButton = new JButton("BAŞLAT");
-        startButton.setForeground(Color.BLACK);
-        startButton.setBackground(Color.WHITE);
-        startButton.setOpaque(true);
-        startButton.setBorderPainted(false);
+
+        JButton startButton = new JButton("START");
+        styleButton(startButton);
 
         createMapButton.addActionListener(new ActionListener() {
             @Override
@@ -47,7 +43,6 @@ public class Main {
             }
         });
 
-
         gbc.insets = new Insets(10, 0, 0, 0);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel.add(createMapButton, gbc);
@@ -56,15 +51,56 @@ public class Main {
         panel.add(startButton, gbc);
 
         frame.add(panel);
-        frame.setSize(1400, 1000);
+        frame.setSize(300, 300);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        /////////
-
-
     }
 
+    private void styleButton(JButton button) {
 
+        button.setForeground(Color.BLACK);
+
+
+        Color whiteBlue = new Color(240, 240, 255);
+        button.setBackground(whiteBlue);
+
+        button.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+        button.setOpaque(true);
+        button.setBorderPainted(true);
+
+        button.setFont(new Font("Arial", Font.BOLD, 14));
+
+        button.setHorizontalAlignment(SwingConstants.CENTER);
+        button.setVerticalAlignment(SwingConstants.CENTER);
+
+        button.setMargin(new Insets(1, 15, 15, 25));
+
+        button.setPreferredSize(new Dimension(220, 40));
+        button.setMinimumSize(new Dimension(220, 40));
+        button.setMaximumSize(new Dimension(220, 60));
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                Color whiteBlue = new Color(250, 240, 245);
+                button.setBackground(whiteBlue);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(whiteBlue);
+            }
+        });
+    }
+
+    public Main(String[] args) {
+        createAndShowGUI();
+    }
+
+    private void initializeCharacter() {
+        Location initialLocation = grid.getInitialCharacterLocation();
+        character = new Character(frame, grid, rows, columns, grid.getIconLocations(), initialLocation);
+        grid.setCharacter(character);
+    }
 
     public static void main(String[] args) {
         new Main(args);
@@ -74,10 +110,16 @@ public class Main {
         JTextField rowsField = new JTextField(5);
         JTextField columnsField = new JTextField(5);
 
-        JPanel myPanel = new JPanel();
+        Dimension textFieldDimension = new Dimension(200, 30);
+        Color textFieldBackground = new Color(240, 240, 255);
+        rowsField.setPreferredSize(textFieldDimension);
+        columnsField.setPreferredSize(textFieldDimension);
+        rowsField.setBackground(textFieldBackground);
+        columnsField.setBackground(textFieldBackground);
+
+        JPanel myPanel = new JPanel(new GridLayout(0, 1));
         myPanel.add(new JLabel("Rows:"));
         myPanel.add(rowsField);
-        myPanel.add(Box.createHorizontalStrut(15));
         myPanel.add(new JLabel("Columns:"));
         myPanel.add(columnsField);
 
@@ -85,26 +127,36 @@ public class Main {
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 
         if (result == JOptionPane.OK_OPTION) {
-            int rows, columns;
             try {
                 rows = Integer.parseInt(rowsField.getText());
                 columns = Integer.parseInt(columnsField.getText());
-                this.rows = rows;
-                this.columns = columns;
 
-
+                frame.getContentPane().removeAll();
                 grid = new Grid(rows, columns);
+                adjustFrameSize(rows,columns);
+                Location initialLocation = new Location(0, 0, 4, 4, null);
+                character = new Character(frame, grid, rows, columns, new ArrayList<>(), initialLocation);
+                CharacterMovement characterMovement = new CharacterMovement(character, grid, rows, columns);
+
+                grid.setCharacter(character);
 
                 frame.getContentPane().removeAll();
                 frame.add(grid);
                 frame.revalidate();
+                frame.repaint();
 
                 grid.RandomLocationsForIcons(20, 3);
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Please enter values.");
+                JOptionPane.showMessageDialog(null, "Please enter numeric values.");
             }
         }
-        grid.Animation();
+    }
+    private void adjustFrameSize(int rows, int columns) {
+        int cellSize = 50;
+        int width = Math.max(columns * cellSize, 500);
+        int height = Math.max(rows * cellSize + 100, 450);
+        frame.setSize(new Dimension(width, height));
+        frame.setLocationRelativeTo(null);
     }
 
 }

@@ -12,10 +12,10 @@ public class MotionObject {
     private static BufferedImage birdareaicon;
     private List<Location> MotionLocations;
     public MotionObject() {
-        bee = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\bee.png");
-        bird = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\bird.png");
-        beeareaicon = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\beearea.png");
-        birdareaicon = loadAndMakeTransparent("C:\\Users\\skrrrt\\Desktop\\prolab4\\birdarea.png");
+        bee = loadAndMakeTransparent("C:\\Users\\merve\\OneDrive\\Masaüstü\\picture\\bee.jpg");
+        bird = loadAndMakeTransparent("C:\\Users\\merve\\OneDrive\\Masaüstü\\picture\\bird.jpg");
+        beeareaicon = loadAndMakeTransparent("C:\\Users\\merve\\OneDrive\\Masaüstü\\picture\\beearea.png");
+        birdareaicon = loadAndMakeTransparent("C:\\Users\\merve\\OneDrive\\Masaüstü\\picture\\birdarea.png");
     }
     private BufferedImage loadAndMakeTransparent(String path) {
         try {
