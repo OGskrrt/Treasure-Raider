@@ -10,3 +10,5 @@ You wanna enjoy? Go start and enjoy the show.
 
 ![Screenshot 2024-03-17 214413](https://github.com/OGskrrt/Treasure-Raider/assets/135557803/e190b20e-03b1-4937-bd34-1bcdee156d05)
 ![Screenshot 2024-03-17 214655](https://github.com/OGskrrt/Treasure-Raider/assets/135557803/ec022ae9-8581-4885-ad49-44ef936d9b7e)
+![image](https://github.com/OGskrrt/Treasure-Raider/assets/135557803/2f408c9c-4ee0-4f48-86be-74e7d065667a)
+
