@@ -1,10 +1,8 @@
-package src;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-public class Treasures extends MotionlessObject {
+public class Treasures extends MotionlessObject{
     private List<Location> TreasureLocations;
     private BufferedImage Gold;
     private BufferedImage Silver;
