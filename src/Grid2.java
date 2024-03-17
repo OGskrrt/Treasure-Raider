@@ -407,7 +407,7 @@ public class Grid2 extends JPanel {
         smoke.smokeAreaRemove(x, y,3);
         // add path to character memory;
 
-
+        // Draw character path
         if (character.getPath().size() > 2) {
             if(g!=null){
                 g.setColor(Color.RED);
@@ -424,6 +424,7 @@ public class Grid2 extends JPanel {
 
             }
         }
+        // Write message if any treasure found
         if (!treasureMessage.isEmpty()) {
             g.setColor(Color.BLUE);
             g.setFont(messageFont);
@@ -542,7 +543,7 @@ public class Grid2 extends JPanel {
         }
     }
 
-    ///
+    /// Collision check
     public boolean isCollision(int x, int y) {
         for (Location barrier : iconLocationsObstacle) {
             if (x >= barrier.getX() && x < barrier.getX() + barrier.getWidth() &&
@@ -576,6 +577,8 @@ public class Grid2 extends JPanel {
     public List<Location> getIconLocationsObstacle() {
         return iconLocationsObstacle;
     }
+
+    // Random direction for character move
     public void goRandom(int x, int y) {
         boolean moved = false;
         stepscount = 0;
@@ -586,21 +589,21 @@ public class Grid2 extends JPanel {
             int newY = character.getCurrY();
 
             switch (movement) {
-                case 0: // Yukarı
+                case 0: // up
                     newY--;
                     break;
-                case 1: // Aşağı
+                case 1: // down
                     newY++;
                     break;
-                case 2: // Sağa
+                case 2: // right
                     newX++;
                     break;
-                case 3: // Sola
+                case 3: // left
                     newX--;
                     break;
             }
 
-            // Yeni konum engellerle çakışmıyorsa, karakteri hareket ettir
+
             if (isValidMove(newX, newY) && !isCollision(newX, newY)) {
                 if(!passedbefore(newX, newY)){
                     character.setCurrX(newX);
@@ -628,7 +631,7 @@ public class Grid2 extends JPanel {
     private boolean isValidMove(int x, int y) {
         return x >= 0 && x < columns && y >= 0 && y < rows;
     }
-
+    // Check if character visited that location
     private boolean passedbefore(int x, int y){
         if(character.getPath().size()>1){
             for (Point point : character.getPath()) {
@@ -640,6 +643,7 @@ public class Grid2 extends JPanel {
         return false;
 
     }
+    //Check if there is treasure
     private void checkTreasure(int x, int y) {
         Location foundTreasure = null;
         for (Location treasureLocation : iconLocationsTreasure) {
@@ -652,6 +656,7 @@ public class Grid2 extends JPanel {
         findinalliconandremove(foundTreasure);
 
     }
+    // remove treasure
     private void findinalliconandremove(Location foundTreasure) {
         if (foundTreasure != null) {
             for (int i = 0; i < AllIconLocations.size(); i++) {
