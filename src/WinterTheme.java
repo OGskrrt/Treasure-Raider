@@ -1,11 +1,15 @@
+package src;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class CustomPanel extends JPanel {
+class WinterTheme extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(new Color(30, 100, 30));
+        g.setColor(new Color(185, 232, 234));
         g.fillRect(0, 0, getWidth(), getHeight());
+        g.setColor(Color.BLACK);
+        g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
     }
 }
